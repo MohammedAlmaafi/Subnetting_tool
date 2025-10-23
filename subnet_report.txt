@@ -1,0 +1,28 @@
+Hey, lazy engineer! Go learn how to subnet by yourself! Don't use this tool again!
+ This is a detailed report of your subneting design!
+
+----------------------------------------------------
+
+subnet_idnet: 192.168.0.0/16
+Mask: 16
+Range: 192.168.0.1/16 -- 192.168.255.254/16
+Broadcast address: 192.168.255.255/16
+Usable hosts: 65534
+
+----------------------------------------------------
+
+subnet_idnet: 192.168.1.0/28
+Mask: 28
+Range: 192.168.1.1/28 -- 192.168.256.14/28
+Broadcast address: 192.168.256.15/28
+Usable hosts: 14
+
+----------------------------------------------------
+
+subnet_idnet: 192.168.1.16/30
+Mask: 30
+Range: 192.168.1.17/30 -- 192.168.256.18/30
+Broadcast address: 192.168.256.19/30
+Usable hosts: 2
+
+----------------------------------------------------

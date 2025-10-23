@@ -1,10 +1,10 @@
 # Description
-This script takes the desired size of the subnetworks in a specific network IP address. 
+This script takes the number of hosts needed for each subnet in the IP address of A, B, or C classes
 
 # Run Program
 in bash/cmd/powershell type the below command:
 
 ---------------------------------------------
->>   python subnetting.py (subnet size)  <<
+>>   python subnetting.py (subnet sizes)  <<
 ---------------------------------------------
 

@@ -168,10 +168,12 @@ def netXX(net, ip, ip_class):
 #############################################################################################################################################
 
 
-def main(array):
+# def main(array):
+if __name__ == "__main__":
     '''
     This is the main method where all methods are invoked
     '''
+    array = userInput()
     ip = address(ip_Address)
     subnetMask, ip_class = detClass(ip[0])
     starting(ip, subnetMask)
@@ -180,4 +182,4 @@ def main(array):
     netXX(array, ip, ip_class)
 
 
-main(userInput())
+# main(userInput())
