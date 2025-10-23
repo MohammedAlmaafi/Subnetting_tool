@@ -94,16 +94,31 @@ def display_output(subnet_id, broadcast_ip, file):
     file.write("\n----------------------------------------------------\n")
     print("\n----------------------------------------------------\n")
 
+def validate_input(ip_address, subnet_chunks):
+    if any(i > 255 for i in ip_address):
+        raise ValueError("Input cannot be greater than 255!")
+    elif any(i < 0 for i in ip_address):
+        raise ValueError("Input cannot be negative!")
+    elif any(i < 0 for i in subnet_chunks):
+        raise ValueError("SERIOUSLY!!! You cannot have a negative number of people. Only Zombies don't count, but they don't use computers!")
+    elif (ip_address[4]> 32):
+        raise ValueError("Subnet mask cannot be greater than 32!")
+    elif (len(ip_address) != 5):
+        raise ValueError("Wrong input!")
+
 if __name__ == "__main__":
     """
     This is the main method
     """
+    ip_address = list(map(int, re.sub(r'[.,/\s+]',' ', input("Enter base network (CIDR): ")).strip().split(' ')))
+    subnet_chunks = list(map(int, input("Enter required hosts per subnet (comma-separated): ").split(', ')))
+    # validate input
+    validate_input(ip_address, subnet_chunks) 
+
+
     with open("subnet_report.txt", "w") as file:
         file.write("Hey, lazy engineer! Go learn how to subnet by yourself! Don't use this tool again!\n This is a detailed report of your subneting design!\n")
         file.write("\n----------------------------------------------------\n")
-        ip_address = list(map(int, re.sub(r'[.,/\s+]',' ', input("Enter base network (CIDR): ")).strip().split(' ')))
-        # TODO check input integerity
-        subnet_chunks = list(map(int, input("Enter required hosts per subnet (comma-separated): ").split(', ')))
         subnet_chunks.sort(reverse=True)
         routing_networks = R2R_ips(len(subnet_chunks))
         subnet_chunks.extend(routing_networks)
