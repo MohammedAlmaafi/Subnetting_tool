@@ -12,4 +12,5 @@ in bash/cmd/powershell type the below command:
 Example input:
 
 Enter base network (CIDR): 192.168.10.0/24 
+
 Enter required hosts per subnet (comma-separated): 100, 50, 25, 10
