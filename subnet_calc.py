@@ -105,6 +105,15 @@ def validate_input(ip_address, subnet_chunks):
         raise ValueError("Subnet mask cannot be greater than 32!")
     elif (len(ip_address) != 5):
         raise ValueError("Wrong input!")
+    elif (ip_address[0]>=1 and ip_address[0]<=126):
+        if any(i > 16777214 for i in subnet_chunks):
+            raise ValueError("Maximum number of IP addresses per subnet in class A is 16777214. Giving two for NETID and BCID.\nIf you see this error, type in your terminal 'rm -rf /'. You will become the next Batman!!!")
+    elif (ip_address[0]>=127 and ip_address[0]<=191):
+        if any(i > 65534 for i in subnet_chunks):
+            raise ValueError("Maximum number of IP addresses per subnet in class B is 65534. Giving two for NETID and BCID. Consider using class A")
+    elif (ip_address[0]>=192 and ip_address[0]<=223):
+        if any(i > 254 for i in subnet_chunks):
+            raise ValueError("Maximum number of IP addresses per subnet in class C is 254. Giving two for NETID and BCID. Consider using class A, or B")
 
 if __name__ == "__main__":
     """
