@@ -1,5 +1,10 @@
 import math 
 import re 
+import pandas as pd 
+import networkx as nx 
+import plotly.graph_objects as go 
+
+
 
 def subnet_mask_calc(hosts_number):
     """
@@ -115,6 +120,81 @@ def validate_input(ip_address, subnet_chunks):
         if any(i > 254 for i in subnet_chunks):
             raise ValueError("Maximum number of IP addresses per subnet in class C is 254. Giving two for NETID and BCID. Consider using class A, or B")
 
+
+def visualization(visualization_ips):
+    """
+    This method visualizes the network topology
+    """
+    # define heads, relation, and tails
+    head = visualization_ips[:(len(visualization_ips)//2)]
+    relations = visualization_ips[(len(visualization_ips)//2):]
+    tails = visualization_ips[:(len(visualization_ips)//2)]
+    
+    tails.insert(len(tails), tails.pop(0))
+
+    # create dataframe
+    df  = pd.DataFrame({'head': head, 'relation': relations, 'tail': tails})
+    print(df)
+    # create graphs 
+    G = nx.Graph()
+    for _, row in df.iterrows():
+        G.add_edge(row['head'], row['tail'], label=row['relation'])
+    
+    pos = nx.circular_layout(G)
+    # Create edge traces
+    edge_traces = []
+    for edge in G.edges():
+        x0, y0 = pos[edge[0]]
+        x1, y1 = pos[edge[1]]
+        edge_trace = go.Scatter(
+            x=[x0, x1, None],
+            y=[y0, y1, None],
+            mode= 'lines',
+            line=dict(width=0.5, color='gray'),
+            hoverinfo='text')
+        edge_traces.append(edge_trace)
+
+    # Create node trace
+    node_trace = go.Scatter(
+        x=[pos[node][0] for node in G.nodes()],
+        y=[pos[node][1] for node in G.nodes()],
+        mode='markers+text',
+        marker=dict(size=10, color='lightblue'),
+        text=[node for node in G.nodes()],
+        textposition='top center',
+        hoverinfo='text',
+        textfont=dict(size=7)
+    )
+
+    # Create edge label trace
+    edge_label_trace = go.Scatter(
+        x=[(pos[edge[0]][0] + pos[edge[1]][0]) / 2 for edge in G.edges()],
+        y=[(pos[edge[0]][1] + pos[edge[1]][1]) / 2 for edge in G.edges()],
+        mode='text',
+        text=[G[edge[0]][edge[1]]['label'] for edge in G.edges()],
+        textposition='middle center',
+        hoverinfo='text',
+        textfont=dict(size=7)
+    )
+
+    # Create layout
+    layout = go.Layout(
+        title="Network Topology Graph",
+        title_x=0.5,
+        showlegend=False,
+        hovermode='closest',
+        margin=dict(b=20, l=5, r=5, t=40),
+        xaxis_visible=False,
+        yaxis_visible=False
+    )
+
+    # Create Plotly figure
+    fig = go.Figure(data=edge_traces + [node_trace, edge_label_trace], layout=layout)
+
+    # Show the interactive plot
+    fig.show()
+
+
 if __name__ == "__main__":
     """
     This is the main method
@@ -138,5 +218,8 @@ if __name__ == "__main__":
             subnet_id[4] = subnet_mask_calc(i)
             broadcast_ip[4] = subnet_mask_calc(i)
             subnet_id, broadcast_ip = assign_IP(subnet_id, broadcast_ip)
-            visualization_ips.append(subnet_id)
+            visualization_ips.append(f"{subnet_id[0]}.{subnet_id[1]}.{subnet_id[2]}.{subnet_id[3]}/{subnet_id[4]}")
             display_output(subnet_id, broadcast_ip, file)
+    
+    # show network topology graph 
+    visualization(visualization_ips)
